@@ -3,7 +3,7 @@
 Yleisiä linkkejä:
 
 * [Linkki sovellukseeni](http://klaufred.users.cs.helsinki.fi/huutokauppa)
-* [Linkki dokumentaatiooni](https://github.com/klaufred/HuutokauppaKamari/tree/master/doc)
+* [Linkki dokumentaatiooni](https://github.com/klaufred/HuutokauppaKamari/tree/master/doc/dokumentaatio.pdf)
 
 ## Työn aihe
 
