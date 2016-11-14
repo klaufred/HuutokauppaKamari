@@ -4,6 +4,11 @@ Yleisiä linkkejä:
 
 * [Linkki sovellukseeni](http://klaufred.users.cs.helsinki.fi/huutokauppa)
 * [Linkki dokumentaatiooni](https://github.com/klaufred/HuutokauppaKamari/tree/master/doc/dokumentaatio.pdf)
+* [Linkki etusivulle](http://klaufred.users.cs.helsinki.fi/huutokauppa/)
+* [Linkki tuotesivulle](http://klaufred.users.cs.helsinki.fi/huutokauppa/product)
+* [Linkki tuotteen muokkaus sivulle](http://klaufred.users.cs.helsinki.fi/huutokauppa/product_modify)
+* [Linkki kirjautumissivulle](http://klaufred.users.cs.helsinki.fi/huutokauppa/login)
+* [Linkki rekisteröitymissivulle](http://klaufred.users.cs.helsinki.fi/huutokauppa/register)
 
 ## Työn aihe
 
