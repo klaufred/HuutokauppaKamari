@@ -8,14 +8,14 @@
 
   <ul>
     <li><strong>Kategoria:</strong> Supernova</li>
-    <li><strong>Kauppa alkaa:</strong> 13.11.2016</li>
-    <li><strong>Kauppa loppuu:</strong> 13.11.2026</li>
-    <li><strong>Vähimmäishinta:</strong> 1 000 000$</li>
+    <li><strong>Kauppa alkaa:</strong> {{product.saleBeginningDate}}</li>
+    <li><strong>Kauppa loppuu:</strong> {{product.saleEndingDate}}</li>
+    <li><strong>Vähimmäishinta:</strong> {{product.minimalPrice}}</li>
     <li><strong>Korkein tarjous:</strong> 6 000 000$</li>
   </ul>
   
   <p>
-    Erinomainen hyvässä kunnossa oleva tuote!
+    {{product.description}}
   </p>
   
   <button type="submit" class="btn btn-primary">Tarjoa!</button>

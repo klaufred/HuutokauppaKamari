@@ -1,9 +1,13 @@
 <?php
 
+  require 'app/models/product.php';
   class HelloWorldController extends BaseController{
 
     public static function sandbox(){
-      View::make('helloworld.html');
+      $game = Product::find(1);
+      $machine = Product::all();
+      Kint::dump($games);
+      Kint::dump($skyrim);
     }
     
     public static function front_page(){

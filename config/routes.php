@@ -1,7 +1,7 @@
 <?php
 
   $routes->get('/', function() {
-    HelloWorldController::front_page();
+    product_controller::index();
   });
 
   $routes->get('/hiekkalaatikko', function() {
@@ -9,17 +9,17 @@
   });
   
   $routes->get('/login', function() {
-  HelloWorldController::login();
+    HelloWorldController::login();
   });
   
   $routes->get('/register', function() {
-  HelloWorldController::register();
+    HelloWorldController::register();
   });
   
-  $routes->get('/product', function() {
-  HelloWorldController::product_page();
+  $routes->get('/product/:id', function($id) {
+      product_controller::product_page($id);
   });
   
   $routes->get('/product_modify', function() {
-  HelloWorldController::product_page_change();
+    HelloWorldController::product_page_change();
   });
