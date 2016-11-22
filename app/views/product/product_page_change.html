@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Muokkaa tuotetta</h1>
+
+  <form>
+    <div class="form-group">
+      <label>Products name</label>
+      <input name="name" class="form-control" type="text">
+    </div>
+     
+    <div class="form-group">
+      <label>Category</label>
+      <input name="category" class="form-control" type="text">
+    </div>
+    
+    <div class="form-group">
+      <label>Sale begins</label>
+      <input name="saleBeginningDate" class="form-control" type="text">
+    </div>
+      
+    <div class="form-group">
+      <label>Sale ends</label>
+      <input name="saleEndingDate" class="form-control" type="text">
+    </div>
+      
+    <div class="form-group">
+      <label>Description</label>
+      <input name="description" class="form-control" type="text">
+    </div>
+
+    <button href="{{base_path}}/product" type="submit" class="btn btn-primary">Valmis!</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Product</h1>
+
+  <p>
+    <a href="{{base_path}}/product_modify" class="btn btn-default">Change</a>
+  </p>
+
+  <ul>
+    <li><strong>Category:</strong> Supernova</li>
+    <li><strong>Sale starts:</strong> {{product.saleBeginningDate}}</li>
+    <li><strong>Sale ends:</strong> {{product.saleEndingDate}}</li>
+    <li><strong>Minimal price:</strong> {{product.minimalPrice}}</li>
+    <li><strong>Highest offer:</strong> 6 000 000$</li>
+  </ul>
+  
+  <p>
+    {{product.description}}
+  </p>
+  
+  <div class="alert alert-success">
+    {{message}}
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Make an offer!</button>
+{% endblock %}

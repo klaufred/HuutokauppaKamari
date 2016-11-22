@@ -6,8 +6,8 @@
     public static function sandbox(){
       $game = Product::find(1);
       $machine = Product::all();
-      Kint::dump($games);
-      Kint::dump($skyrim);
+      Kint::dump($game);
+      Kint::dump($machine);
     }
     
     public static function front_page(){
