@@ -39,10 +39,15 @@
           <ul class="nav navbar-nav">
             <li><a href="{{base_path}}">Front page</a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{base_path}}/login">Log in</a></li>
-            <li><a href="{{base_path}}/register">Register</a></li>
-          </ul>
+            {% if customer %}
+                <form class="navbar-form navbar-right" method="post" action="{{base_path}}/logout">
+                <button type="submit" class="btn btn-default">Log out</button>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{base_path}}/login">Log in</a></li>
+                    <li><a href="{{base_path}}/register">Register</a></li>
+                </ul>
+            {% endif %}
         </div>
       </div>
     </nav>

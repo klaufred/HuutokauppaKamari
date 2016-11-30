@@ -2,10 +2,22 @@
 {% block content %}
   <h1>Muokkaa tuotetta</h1>
 
-  <form>
+  {% if errors %}
+    <div class="alert alert-danger">
+        <strong>Product editing failed, try again!</strong>
+    </div>
+  {% endif %}
+
+  {% if message %}
+  <div class="alert alert-success">
+    {{message}}
+  </div>
+  {% endif %}
+  
+  <form method="post" action="{{base_path}}/product/{{params.id}}/product_modify">
     <div class="form-group">
       <label>Products name</label>
-      <input name="name" class="form-control" type="text">
+      <input name="productName" class="form-control" type="text" value="{{params.productName}}">
     </div>
      
     <div class="form-group">
@@ -14,20 +26,27 @@
     </div>
     
     <div class="form-group">
+      <label>Minimal Price</label>
+      <input name="minimalPrice" class="form-control" type="text" value="{{params.minimalPrice}}">
+    </div>
+      
+    <div class="form-group">
       <label>Sale begins</label>
-      <input name="saleBeginningDate" class="form-control" type="text">
+      <input name="saleBeginningDate" class="form-control" type="text" value="{{params.saleBeginningDate}}">
     </div>
       
     <div class="form-group">
       <label>Sale ends</label>
-      <input name="saleEndingDate" class="form-control" type="text">
+      <input name="saleEndingDate" class="form-control" type="text" value="{{params.saleEndingDate}}">
     </div>
       
     <div class="form-group">
       <label>Description</label>
-      <input name="description" class="form-control" type="text">
+      <input name="description" class="form-control" type="text" value="{{params.description}}">
     </div>
 
-    <button href="{{base_path}}/product" type="submit" class="btn btn-primary">Valmis!</button>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Ready!</button>
+    </div>
   </form>
 {% endblock %}

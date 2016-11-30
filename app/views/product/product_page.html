@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Product</h1>
+{% import "macros/forms.html" as forms %}
+  <h1>{{product.productName}}</h1>
 
   <p>
-    <a href="{{base_path}}/product_modify" class="btn btn-default">Change</a>
+    <a href="{{base_path}}/product/{{product.id}}/product_modify" class="btn btn-default">Edit</a>
   </p>
+  
+  {{forms.destroy_button("#{base_path}/product/#{product.id}/destroy")}}
 
   <ul>
     <li><strong>Category:</strong> Supernova</li>
@@ -18,9 +21,11 @@
     {{product.description}}
   </p>
   
+  {% if message %}
   <div class="alert alert-success">
     {{message}}
   </div>
+  {% endif %}
   
   <button type="submit" class="btn btn-primary">Make an offer!</button>
 {% endblock %}

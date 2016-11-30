@@ -9,7 +9,15 @@
   });
   
   $routes->get('/login', function() {
-    HelloWorldController::login();
+    user_controller::login();
+  });
+  
+  $routes->post('/login', function() {
+    user_controller::handle_login();
+  });
+  
+  $routes->post('/logout', function(){
+    user_controller::logout();
   });
   
   $routes->get('/register', function() {
@@ -27,6 +35,14 @@
       product_controller::product_page($id);
   });
   
-  $routes->get('/product_modify', function() {
-    HelloWorldController::product_page_change();
+  $routes->get('/product/:id/product_modify', function($id) {
+      product_controller::product_page_change($id);
+  });
+  
+  $routes->post('/product/:id/product_modify', function($id){
+      product_controller::update($id);
+  });
+
+  $routes->post('/product/:id/destroy', function($id){
+      product_controller::destroy($id);
   });

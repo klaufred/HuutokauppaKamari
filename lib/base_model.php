@@ -3,6 +3,7 @@
   class BaseModel{
     // "protected"-attribuutti on käytössä vain luokan ja sen perivien luokkien sisällä
     protected $validators;
+    public $validations;
 
     public function __construct($attributes = null){
       // Käydään assosiaatiolistan avaimet läpi
@@ -14,16 +15,16 @@
         }
       }
     }
-
+    public function validate($params){
+        $validators=new Valitron\Validator($params);
+        $validators->rules($this->validations);
+        $this->validators=$validators;
+        return $validators->validate();
+    }
+    
     public function errors(){
-      // Lisätään $errors muuttujaan kaikki virheilmoitukset taulukkona
-      $errors = array();
-
-      foreach($this->validators as $validator){
-        // Kutsu validointimetodia tässä ja lisää sen palauttamat virheet errors-taulukkoon
-      }
-
-      return $errors;
+        return $this->validators->errors();
     }
 
+    
   }

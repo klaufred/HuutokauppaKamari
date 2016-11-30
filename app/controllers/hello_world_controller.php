@@ -4,10 +4,16 @@
   class HelloWorldController extends BaseController{
 
     public static function sandbox(){
-      $game = Product::find(1);
-      $machine = Product::all();
-      Kint::dump($game);
-      Kint::dump($machine);
+     $doom = new Product(array(
+                'productName' => 'd',
+                'description' => '',
+                'minimalPrice' => 'hhh',
+                'saleBeginningDate' => 'h',
+                'saleEndingDate' => 'th'
+      ));
+   $errors = $doom->errors();
+
+  Kint::dump($errors);
     }
     
     public static function front_page(){
