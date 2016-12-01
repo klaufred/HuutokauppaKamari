@@ -3,12 +3,13 @@
 {% import "macros/forms.html" as forms %}
   <h1>{{product.productName}}</h1>
 
+   {% if customer.username == product.customer %}
   <p>
     <a href="{{base_path}}/product/{{product.id}}/product_modify" class="btn btn-default">Edit</a>
+    {{forms.destroy_button("#{base_path}/product/#{product.id}/destroy")}}
   </p>
+  {% endif %}
   
-  {{forms.destroy_button("#{base_path}/product/#{product.id}/destroy")}}
-
   <ul>
     <li><strong>Category:</strong> Supernova</li>
     <li><strong>Sale starts:</strong> {{product.saleBeginningDate}}</li>

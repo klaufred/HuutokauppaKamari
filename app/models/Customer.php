@@ -38,10 +38,9 @@ class Customer extends BaseModel{
         $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email));
     }
     
-    public function update($id){
+    public function update($params){
         $query = DB::connection()->prepare('UPDATE Customer SET username = :username, password = :password, address = :address, email = :email WHERE username = :id');
-        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $id));
-        $this->username = $username;
+        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $params['username']));
     }
     
     public static function delete($username){
@@ -83,6 +82,32 @@ class Customer extends BaseModel{
         return null;
     }
     
+    public static function createFromParams($params) {
+        if ($params != null){
+            $customer = new Customer(array(
+                'username' => $params['username'],
+                'password' => $params['password'],
+                'email' => $params['email'],
+                'address' => $params['address']
+            ));
+            return $customer;
+        }
+        return null;
+    }
     
+    
+    
+    public static function checkUsername($params){
+        
+        $query = DB::connection()->prepare('SELECT * FROM Customer WHERE username = :username');
+        $query->execute(array('username' => $params['username']));
+        $row = $query->fetch();
+        
+        if ($row == null){
+            return true;
+        }
+        return false;
+    }
 
+    
 }

@@ -1,5 +1,5 @@
 <?php
-require 'app/models/product.php';
+require 'app/models/Product.php';
 class product_controller extends BaseController{
     
     public static function index() {
@@ -55,13 +55,10 @@ class product_controller extends BaseController{
         
         
         if($product->validate($params)) {
-            $product->save($customer);
+            $product->save();
             Redirect::to('/product/' . $product->id, array('message' => 'Product added!'));
         }else{
            View::make('product/new_product.html', array('errors' => $product->errors(), 'message' => 'Adding product failed, try again', 'params' => $params, 'customer' => $customer)); 
-        }
-        
-
-        
-  }
+        } 
+    }
 }

@@ -57,20 +57,6 @@ class Product extends BaseModel{
         return $products;
     }
     
-    public static function findAllByCustomer($customer){
-        $query = DB::connection()->prepare('SELECT * FROM Product WHERE customer = :customer');
-        $query->execute(array('customer' => $customer));
-        $query->execute();
-        $rows = $query->fetchAll();
-        $products = array();
-
-        foreach($rows as $row){
-            $products[] = Product::createFromARow($row);
-        }
-
-        return $products;
-    }
-    
     public static function findWithId($id){
         $query = DB::connection()->prepare('SELECT * FROM Product WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $id));

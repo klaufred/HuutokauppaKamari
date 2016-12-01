@@ -4,16 +4,7 @@
   class HelloWorldController extends BaseController{
 
     public static function sandbox(){
-     $doom = new Product(array(
-                'productName' => 'd',
-                'description' => '',
-                'minimalPrice' => 'hhh',
-                'saleBeginningDate' => 'h',
-                'saleEndingDate' => 'th'
-      ));
-   $errors = $doom->errors();
-
-  Kint::dump($errors);
+     View::make('helloworld.html');
     }
     
     public static function front_page(){
