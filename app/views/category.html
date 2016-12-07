@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-
-  {% if customer %}
-    <h1>User {{customer.username}}</h1>
-  {% endif %}
+  <h1>Products on {{category.categoryName}}</h1>
   
   {% if message %}
   <div class="alert alert-success">
@@ -11,20 +8,6 @@
   </div>
   {% endif %}
 
-  
-  <h2>Search products from categories</h2>
-    {% for category in categories %}
-        <a href="{{base_path}}/category/{{category.id}}"><button type="button">{{category.categoryName}}</button></a>
-    {% endfor %}
-  
-  
-   <p>
-    <a href="{{base_path}}/product/new" class="btn btn-success">Add a new product</a>
-   </p>
-
-
-   <h2>Search all products</h2>
-   
   <table class="table table-striped table-bordered">
     <thead>
       <tr>

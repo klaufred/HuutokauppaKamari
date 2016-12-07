@@ -3,11 +3,11 @@
   $routes->get('/', function() {
     product_controller::index();
   });
-
-  $routes->get('/hiekkalaatikko', function() {
-    HelloWorldController::sandbox();
-  });
   
+  $routes->get('/sellers', function() {
+    user_controller::sellers();
+  });
+
   $routes->get('/login', function() {
     user_controller::login();
   });
@@ -28,16 +28,16 @@
     user_controller::handle_register();
   });
   
-  $routes->get('/profile', function() {
-    user_controller::see_profile();
+  $routes->get('/profile/:username', function($username) {
+    user_controller::see_profile($username);
   });
   
-  $routes->post('/profile', function() {
-    user_controller::alter_profile();
+  $routes->post('/profile/:username', function($username) {
+    user_controller::alter_profile($username);
   });
   
-  $routes->post('/profile/destroy', function($username){
-    user_controller::destroy($username);
+  $routes->post('/profile/:customer/destroy', function(){
+    user_controller::destroy();
   });
   
   $routes->post('/product', function() {
@@ -61,4 +61,8 @@
 
   $routes->post('/product/:id/destroy', function($id){
       product_controller::destroy($id);
+  });
+  
+  $routes->get('/category/:category_id', function($category_id){
+      product_controller::show_by_category($category_id);
   });

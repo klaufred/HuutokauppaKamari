@@ -18,36 +18,65 @@
     <div class="form-group">
       <label>Products name</label>
       <input name="productName" class="form-control" type="text" value="{{params.productName}}">
+      <ul>
+            {% for error in errors.productName %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+      </ul>
     </div>
      
     <div class="form-group">
-      <label>Category</label>
-      <input name="category" class="form-control" type="text">
+        <label>Category</label>
+        <select class="form-control" name="categories[]" multiple="">
+            {% for category in categories %}
+                <option value="{{category.id}}">{{category.categoryName}}</option>
+            {% endfor %}
+        </select>
+        <ul>
+            {% for error in errors.category %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+        </ul>
     </div>
     
     <div class="form-group">
       <label>Minimal Price</label>
       <input name="minimalPrice" class="form-control" type="text" value="{{params.minimalPrice}}">
+      <ul>
+            {% for error in errors.minimalPrice %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+      </ul>
     </div>
       
     <div class="form-group">
       <label>Sale begins</label>
       <input name="saleBeginningDate" class="form-control" type="text" value="{{params.saleBeginningDate}}">
+      <ul>
+            {% for error in errors.saleBeginningDate %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+      </ul>
     </div>
       
     <div class="form-group">
       <label>Sale ends</label>
       <input name="saleEndingDate" class="form-control" type="text" value="{{params.saleEndingDate}}">
+      <ul>
+            {% for error in errors.saleEndingDate %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+      </ul>
     </div>
       
     <div class="form-group">
       <label>Description</label>
       <input name="description" class="form-control" type="text" value="{{params.description}}">
-    </div>
-      
-    <div class="form-group">
-      <label>Seller</label>
-      <input name="seller" class="form-control" type="text" value="{{customer.username}}">
+      <ul>
+            {% for error in errors.description %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+      </ul>
     </div>
 
     <div class="form-group">

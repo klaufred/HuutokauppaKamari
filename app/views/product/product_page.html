@@ -10,8 +10,17 @@
   </p>
   {% endif %}
   
+  {% if categories %}
+  <h3>Categories</h3>
+    <ul>
+        {% for category in categories %}
+            <li><strong>{{category.categoryName}}</strong></li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+  
+  <h3>Info</h3>
   <ul>
-    <li><strong>Category:</strong> Supernova</li>
     <li><strong>Sale starts:</strong> {{product.saleBeginningDate}}</li>
     <li><strong>Sale ends:</strong> {{product.saleEndingDate}}</li>
     <li><strong>Minimal price:</strong> {{product.minimalPrice}}</li>

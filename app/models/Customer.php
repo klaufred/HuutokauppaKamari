@@ -22,7 +22,8 @@ class Customer extends BaseModel{
     }
     
     public static function authenticate($username, $password){
-        $query = DB::connection()->prepare('SELECT * FROM Customer WHERE username = :username AND password = :password LIMIT 1');
+        $query = DB::connection()->prepare('SELECT * FROM Customer '
+                . 'WHERE username = :username AND password = :password LIMIT 1');
         $query->execute(array('username' => $username, 'password' => $password));
         $row = $query->fetch();
         if($row){
@@ -34,12 +35,15 @@ class Customer extends BaseModel{
 
     
     public function save(){
-        $query = DB::connection()->prepare('INSERT INTO Customer (username, password, address, email) VALUES (:username, :password, :address, :email)');
+        $query = DB::connection()->prepare('INSERT INTO Customer (username, password, address, email) '
+                . 'VALUES (:username, :password, :address, :email)');
         $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email));
     }
     
     public function update($params){
-        $query = DB::connection()->prepare('UPDATE Customer SET username = :username, password = :password, address = :address, email = :email WHERE username = :id');
+        $query = DB::connection()->prepare('UPDATE Customer '
+                . 'SET username = :username, password = :password, address = :address, email = :email '
+                . 'WHERE username = :id');
         $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $params['username']));
     }
     
@@ -67,6 +71,20 @@ class Customer extends BaseModel{
         $row = $query->fetch();
 
         return Customer::createFromRow($row);
+    }
+    
+    public static function findSellers(){
+        $query = DB::connection()->prepare('SELECT DISTINCT customer.username, password, address, email '
+                . 'FROM Customer INNER JOIN Product ON Customer.username = Product.customer');
+        $query->execute();
+        $rows = $query->fetchAll();
+        $customers = array();
+
+        foreach($rows as $row){
+            $customers[] = Customer::createFromRow($row);
+        }
+
+        return $customers;
     }
     
     private static function createFromRow($row) {

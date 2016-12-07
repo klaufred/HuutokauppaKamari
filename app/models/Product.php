@@ -26,15 +26,17 @@ class Product extends BaseModel{
         );
     }
     
-    public function save(){
-        $query = DB::connection()->prepare('INSERT INTO Product (productName, description, minimalPrice, saleBeginningDate, saleEndingDate, customer) VALUES (:productName, :description, :minimalPrice, :saleBeginningDate, :saleEndingDate, :customer) RETURNING id');
-        $query->execute(array('productName' => $this->productName, 'description' => $this->description, 'minimalPrice' => $this->minimalPrice, 'saleBeginningDate' => $this->saleBeginningDate, 'saleEndingDate' => $this->saleEndingDate, 'customer' => $this->customer));
+    public function save($customer){
+        $query = DB::connection()->prepare('INSERT INTO Product (productName, description, minimalPrice, saleBeginningDate, saleEndingDate, customer) '
+                . 'VALUES (:productName, :description, :minimalPrice, :saleBeginningDate, :saleEndingDate, :customer) RETURNING id');
+        $query->execute(array('productName' => $this->productName, 'description' => $this->description, 'minimalPrice' => $this->minimalPrice, 'saleBeginningDate' => $this->saleBeginningDate, 'saleEndingDate' => $this->saleEndingDate, 'customer' => $customer->username));
         $row = $query->fetch();
         $this->id = $row['id'];
     }
     
     public function update($id){
-        $query = DB::connection()->prepare('UPDATE Product SET productName = :productName, description = :description, saleBeginningDate = :saleBeginningDate, saleEndingDate = :saleEndingDate, minimalPrice = :minimalPrice WHERE id = :id');
+        $query = DB::connection()->prepare('UPDATE Product '
+                . 'SET productName = :productName, description = :description, saleBeginningDate = :saleBeginningDate, saleEndingDate = :saleEndingDate, minimalPrice = :minimalPrice WHERE id = :id');
         $query->execute(array('productName' => $this->productName, 'description' => $this->description, 'minimalPrice' => $this->minimalPrice, 'saleBeginningDate' => $this->saleBeginningDate, 'saleEndingDate' => $this->saleEndingDate, 'id' => $id));
         $this->id = $id;
     }
@@ -60,7 +62,6 @@ class Product extends BaseModel{
     public static function findAllByCustomer($customer){
         $query = DB::connection()->prepare('SELECT * FROM Product WHERE customer = :customer');
         $query->execute(array('customer' => $customer));
-        $query->execute();
         $rows = $query->fetchAll();
         $products = array();
 
@@ -71,12 +72,26 @@ class Product extends BaseModel{
         return $products;
     }
     
-    public static function findWithId($id){
+    public static function findWithId($id) {
         $query = DB::connection()->prepare('SELECT * FROM Product WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
 
         return Product::createFromARow($row);
+    }
+
+    public static function findWithCategory($id){
+        $query = DB::connection()->prepare('SELECT * FROM Product WHERE product.id '
+                . 'IN (SELECT productcategory.product FROM Productcategory WHERE productcategory.category = :id )');
+        $query->execute(array('id' => $id));
+        $rows = $query->fetchAll();
+        $products = array();
+
+        foreach($rows as $row){
+            $products[] = Product::createFromARow($row);
+        }
+
+        return $products;
     }
     
     public static function findWithName($productName){
@@ -87,7 +102,7 @@ class Product extends BaseModel{
         return Product::createFromARow($row);
     }
     
-    private static function createFromARow($row) {
+    public static function createFromARow($row) {
         if ($row){
             $product = new Product(array(
                 'id' => $row['id'],
@@ -104,7 +119,7 @@ class Product extends BaseModel{
         return null;
     }
     
-    public static function createFromParams($params) {
+    public static function createFromParams($params, $customer) {
         if ($params!=null){
             $product = new Product(array(
                 'productName' => $params['productName'],
@@ -112,7 +127,7 @@ class Product extends BaseModel{
                 'minimalPrice' => $params['minimalPrice'],
                 'saleBeginningDate' => $params['saleBeginningDate'],
                 'saleEndingDate' => $params['saleEndingDate'],
-                'customer' => $params['seller']
+                'customer' => $customer
             ));
             return $product;
         }
