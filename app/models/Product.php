@@ -67,9 +67,22 @@ class Product extends BaseModel{
 
         foreach($rows as $row){
             $products[] = Product::createFromARow($row);
+            
         }
 
         return $products;
+    }
+    
+    public static function deleteAllByCustomer($customer){
+        $query = DB::connection()->prepare('SELECT * FROM Product WHERE customer = :customer');
+        $query->execute(array('customer' => $customer));
+        $rows = $query->fetchAll();
+        $products = array();
+
+        foreach($rows as $row){
+            $query = DB::connection()->prepare('DELETE FROM Product WHERE id = :id');
+            $query->execute(array('id' => $row['id']));
+        }
     }
     
     public static function findWithId($id) {

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+{% import "macros/forms.html" as forms %}
+  <h1>{{product.productName}}</h1>
+  
+  {% if message %}
+  <div class="alert alert-success">
+    {{message}}
+  </div>
+  {% endif %}
+
+  <form method="post" action="(/product/:id/offer/new">
+    <div class="form-group">
+      <label>_Amount</label>
+      <input name="amount" class="form-control" type="text">
+        <ul>
+            {% for error in errors.amount %}
+                <li>"{{error}}"</li>
+            {% endfor %}
+        </ul> 
+    </div>
+      
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Make an offer!</button>
+    </div>
+</form>
+  
+{% endblock %}

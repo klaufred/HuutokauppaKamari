@@ -11,20 +11,10 @@
   
   {% if customer.username == profileOwner.username %}
   <p>
-    {{forms.destroy_button("#{base_path}/profile/destroy")}}
+    {{forms.destroy_button("#{base_path}/profile/#{customer.username}/destroy")}}
   </p>
   
   <form method="post" action="{{base_path}}/profile/{{profileOwner.username}}">
-    <div class="form-group">
-      <label>Username</label>
-      <input name="username" class="form-control" type="text" value="{{profileOwner.username}}">
-      <ul>
-        {% for error in errors.username %}
-          <li>"{{error}}"</li>
-        {% endfor %}
-      </ul> 
-    </div>
-      
       <div class="form-group">
       <label>Password</label>
       <input name="password" class="form-control" type="password" value="{{profileOwner.password}}">
@@ -36,7 +26,7 @@
     </div>
       
     <div class="form-group">
-      <label>Password again</label>
+      <label>Confirmation</label>
       <input name="confirmation" class="form-control" type="password" value="{{profileOwner.password}}">
       <ul>
         {% for error in errors.confirmation %}

@@ -40,11 +40,11 @@ class Customer extends BaseModel{
         $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email));
     }
     
-    public function update($params){
+    public function update($username){
         $query = DB::connection()->prepare('UPDATE Customer '
                 . 'SET username = :username, password = :password, address = :address, email = :email '
                 . 'WHERE username = :id');
-        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $params['username']));
+        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $username));
     }
     
     public static function delete($username){
@@ -100,13 +100,13 @@ class Customer extends BaseModel{
         return null;
     }
     
-    public static function createFromParams($params) {
-        if ($params != null){
+    public static function createFromParams($attributes) {
+        if ($attributes != null){
             $customer = new Customer(array(
-                'username' => $params['username'],
-                'password' => $params['password'],
-                'email' => $params['email'],
-                'address' => $params['address']
+                'username' => $attributes['username'],
+                'password' => $attributes['password'],
+                'email' => $attributes['email'],
+                'address' => $attributes['address']
             ));
             return $customer;
         }
@@ -115,10 +115,9 @@ class Customer extends BaseModel{
     
     
     
-    public static function checkUsername($params){
-        
+    public static function checkUsername($username){
         $query = DB::connection()->prepare('SELECT * FROM Customer WHERE username = :username');
-        $query->execute(array('username' => $params['username']));
+        $query->execute(array('username' => $username));
         $row = $query->fetch();
         
         if ($row == null){

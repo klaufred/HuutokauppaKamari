@@ -32,14 +32,14 @@
     user_controller::see_profile($username);
   });
   
+  $routes->post('/profile/:username/destroy', function($username){
+    user_controller::destroy($username);
+  });
+  
   $routes->post('/profile/:username', function($username) {
     user_controller::alter_profile($username);
   });
-  
-  $routes->post('/profile/:customer/destroy', function(){
-    user_controller::destroy();
-  });
-  
+
   $routes->post('/product', function() {
       product_controller::store();
   });
@@ -65,4 +65,16 @@
   
   $routes->get('/category/:category_id', function($category_id){
       product_controller::show_by_category($category_id);
+  });
+  
+  $routes->get('/product/:id/offer', function($id) {
+      offer_controller::new_offer($id);
+  });
+  
+  $routes->post('/product/:id/offer/new', function() {
+      offer_controller::save_new_offer();
+  });
+  
+  $routes->get('/product/:id/offer/:id/', function() {
+      offer_controller::offer_page();
   });

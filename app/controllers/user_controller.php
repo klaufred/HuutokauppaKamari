@@ -37,9 +37,18 @@ class user_controller extends BaseController{
     
     public static function handle_register(){
         $params = $_POST;
-        $customer = Customer::createFromParams($params);
         
-        if($customer->validate($params) && $customer->checkUsername($params)) {
+        $attributes = array(
+            'username' => $params['username'],
+            'password' => $params['password'],
+            'confirmation' => $params['confirmation'],
+            'address' => $params['address'],
+            'email' => $params['email']
+        );
+        
+        $customer = new Customer($attributes);
+        
+        if($customer->validate($params) && $customer->checkUsername($params['username'])) {
             $customer->save();
             $_SESSION['customer'] = $customer->username;
             Redirect::to('/', array('message' => 'A new customer registered!', 'customer' => $customer));
@@ -58,22 +67,32 @@ class user_controller extends BaseController{
     public static function alter_profile($username){
         self::check_logged_in();
         $params = $_POST;
-        $customer = Customer::createFromParams($params);
         
-        if($customer->validate($params)) {
-            $customer->update($params);
+        $attributes = array(
+            'username' => $username,
+            'password' => $params['password'],
+            'confirmation' => $params['confirmation'],
+            'address' => $params['address'],
+            'email' => $params['email']
+        );
+        
+        $customer = new Customer($attributes);
+        
+        if($customer->validate($attributes)) {
+            $customer->update($username);
             Redirect::to('/profile/' . $username, array('message' => 'Customer info changed!'));
             
         } else {
-            $customer = self::get_user_logged_in();
-            View::make('customer/profile.html', array('errors' => $customer->errors(), 'message' => 'Changing customer info failed, try again', 'params' => $params, 'customer' => $customer));
+            $products = Product::findAllByCustomer($username);
+            $user = self::get_user_logged_in();
+            View::make('customer/profile.html', array('products' => $products,'errors' => $customer->errors(), 'profileOwner' => $user,  'message' => 'Changing customer info failed, try again', 'params' => $params, 'customer' => $user));
         }
     }
     
-    public static function destroy(){
+    public static function destroy($username){
         self::check_logged_in();
-        $customer = self::get_user_logged_in();
-        Customer::delete($customer->username);
+        Product::deleteAllByCustomer($username);
+        Customer::delete($username);
         Redirect::to('/', array('message' => 'Profile deleted!'));
     }
 }
