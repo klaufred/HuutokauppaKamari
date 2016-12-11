@@ -3,6 +3,12 @@
 {% import "macros/forms.html" as forms %}
   <h1>{{product.productName}}</h1>
 
+  {% if message %}
+  <div class="alert alert-success">
+    {{message}}
+  </div>
+  {% endif %}
+  
    {% if customer.username == product.customer %}
   <p>
     <a href="{{base_path}}/product/{{product.id}}/product_modify" class="btn btn-default">Edit</a>
@@ -23,19 +29,15 @@
   <ul>
     <li><strong>Sale starts:</strong> {{product.saleBeginningDate}}</li>
     <li><strong>Sale ends:</strong> {{product.saleEndingDate}}</li>
-    <li><strong>Minimal price:</strong> {{product.minimalPrice}}</li>
-    <li><strong>Highest offer:</strong> 6 000 000$</li>
+    <li><strong>Minimal price:</strong> {{product.minimalPrice}}$</li>
+    <li><strong>Highest offer:</strong> {{highestOffer}}$</li>
   </ul>
   
   <p>
     {{product.description}}
   </p>
   
-  {% if message %}
-  <div class="alert alert-success">
-    {{message}}
-  </div>
+  {% if customer.username != product.customer %}
+    <a href="{{base_path}}/product/{{product.id}}/offer" class="btn btn-success">Make an offer!</a>
   {% endif %}
-  
-  <button type="submit" class="btn btn-primary">Make an offer!</button>
 {% endblock %}

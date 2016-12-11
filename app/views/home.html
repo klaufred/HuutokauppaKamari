@@ -21,6 +21,15 @@
    <p>
     <a href="{{base_path}}/product/new" class="btn btn-success">Add a new product</a>
    </p>
+   
+   <h2>Search with a keyword</h2>
+   <form method="get" action="" class="form-inline">
+    <div class="form group">
+      <input name="search" class="form-control" placeholder="Keyword" type="text">
+    </div>
+
+    <button type="submit" class="btn btn-success">Search!</button>
+  </form>
 
 
    <h2>Search all products</h2>
@@ -42,10 +51,12 @@
         <td><a href="{{base_path}}/product/{{product.id}}">{{product.productName}}</a></td>
         <td>{{product.saleBeginningDate}}</td>
         <td>{{product.saleEndingDate}}</td>
-        <td>{{product.minimalPrice}}</td>
-        <td>6 000 000$</td>
+        <td>{{product.minimalPrice}}$</td>
+        <td>{{product.highestOffer}}$</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+   
+   <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
 {% endblock %}

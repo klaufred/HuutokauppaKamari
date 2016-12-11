@@ -1,7 +1,7 @@
 <?php
 
 class Product extends BaseModel{
-    public $id, $productName, $description, $minimalPrice, $saleBeginningDate, $saleEndingDate, $customer;
+    public $id, $productName, $description, $minimalPrice, $saleBeginningDate, $saleEndingDate, $customer, $highestOffer;
     
     public function __construct($attributes){
         parent::__construct($attributes);
@@ -12,8 +12,8 @@ class Product extends BaseModel{
             'date' => array(
                 array('saleBeginningDate'),array('saleEndingDate')),
             
-            'dateAfter' => array(
-                array('saleEndingDate, saleBeginningDate')),
+            'dateBefore' => array(
+                array('saleBeginningDate, saleEndingDate')),
             
             'lengthMax' => array(
                 array('description',500),array('productName',100)),
@@ -46,27 +46,66 @@ class Product extends BaseModel{
         $query->execute(array('id' => $id));
     }
     
-    public static function all(){
-        $query = DB::connection()->prepare('SELECT * FROM Product ORDER BY productName');
+    public static function all($options){
+        $query_string = 'SELECT Product.id, Product.productName, '
+                . 'Product.description, Product.minimalPrice, '
+                . 'Product.saleBeginningDate, Product.saleEndingDate, Product.customer,'
+                . ' MAX(offer.amount) AS highestOffer '
+                . 'FROM Product LEFT JOIN Offer ON Product.id = Offer.product';
+        
+        if(isset($options['search'])){
+            $query_string .= ' WHERE productName LIKE :like';
+            $options = array('like' => '%' . $options['search'] . '%');
+        }
+        $query_string .= ' GROUP BY Product.id, Product.productName, Product.description, '
+                . 'Product.minimalPrice, Product.saleBeginningDate, Product.saleEndingDate, Product.customer '
+                . 'ORDER BY productName;';
+        
+        $query = DB::connection()->prepare($query_string);
+        $query->execute($options);
+        $rows = $query->fetchAll();
+        $products = array();
+
+        foreach($rows as $row){
+            $products[] = Product::createFromARowWithOffer($row);
+        }
+
+        return $products;
+    }
+    
+    public static function allProductsAndHighestOffer(){
+        $query = DB::connection()->prepare('SELECT Product.id, Product.productName, '
+                . 'Product.description, Product.minimalPrice, Product.saleBeginningDate, '
+                . 'Product.saleEndingDate, Product.customer, MAX(Offer.amount) AS highestOffer '
+                . 'FROM Product LEFT JOIN Offer ON Product.id = Offer.product '
+                . 'GROUP BY Product.id, Product.productName, Product.description, '
+                . 'Product.minimalPrice, Product.saleBeginningDate, Product.saleEndingDate, Product.customer '
+                . 'ORDER BY productName;');
         $query->execute();
         $rows = $query->fetchAll();
         $products = array();
 
         foreach($rows as $row){
-            $products[] = Product::createFromARow($row);
+            $products[] = Product::createFromARowWithOffer($row);
         }
 
         return $products;
     }
     
     public static function findAllByCustomer($customer){
-        $query = DB::connection()->prepare('SELECT * FROM Product WHERE customer = :customer');
+        $query = DB::connection()->prepare('SELECT Product.id, Product.productName, '
+                . 'Product.description, Product.minimalPrice, Product.saleBeginningDate, '
+                . 'Product.saleEndingDate, Product.customer, MAX(Offer.amount) AS highestOffer '
+                . 'FROM Product LEFT JOIN Offer ON Product.id = Offer.product '
+                . 'WHERE Product.customer = :customer '
+                . 'GROUP BY Product.id, Product.productName, Product.description, '
+                . 'Product.minimalPrice, Product.saleBeginningDate, Product.saleEndingDate, Product.customer;');
         $query->execute(array('customer' => $customer));
         $rows = $query->fetchAll();
         $products = array();
 
         foreach($rows as $row){
-            $products[] = Product::createFromARow($row);
+            $products[] = Product::createFromARowWithOffer($row);
             
         }
 
@@ -94,14 +133,20 @@ class Product extends BaseModel{
     }
 
     public static function findWithCategory($id){
-        $query = DB::connection()->prepare('SELECT * FROM Product WHERE product.id '
-                . 'IN (SELECT productcategory.product FROM Productcategory WHERE productcategory.category = :id )');
+        $query = DB::connection()->prepare('SELECT Product.id, Product.productName, '
+                . 'Product.description, Product.minimalPrice, Product.saleBeginningDate, '
+                . 'Product.saleEndingDate, Product.customer, MAX(Offer.amount) AS highestOffer '
+                . 'FROM Product LEFT JOIN Offer ON Product.id = Offer.product '
+                . 'WHERE product.id IN '
+                . '(SELECT productcategory.product FROM Productcategory WHERE productcategory.category = :id )'
+                . 'GROUP BY Product.id, Product.productName, Product.description, '
+                . 'Product.minimalPrice, Product.saleBeginningDate, Product.saleEndingDate, Product.customer;');
         $query->execute(array('id' => $id));
         $rows = $query->fetchAll();
         $products = array();
 
         foreach($rows as $row){
-            $products[] = Product::createFromARow($row);
+            $products[] = Product::createFromARowWithOffer($row);
         }
 
         return $products;
@@ -132,15 +177,17 @@ class Product extends BaseModel{
         return null;
     }
     
-    public static function createFromParams($params, $customer) {
-        if ($params!=null){
+    public static function createFromARowWithOffer($row) {
+        if ($row){
             $product = new Product(array(
-                'productName' => $params['productName'],
-                'description' => $params['description'],
-                'minimalPrice' => $params['minimalPrice'],
-                'saleBeginningDate' => $params['saleBeginningDate'],
-                'saleEndingDate' => $params['saleEndingDate'],
-                'customer' => $customer
+                'id' => $row['id'],
+                'productName' => $row['productname'],
+                'description' => $row['description'],
+                'minimalPrice' => $row['minimalprice'],
+                'saleBeginningDate' => $row['salebeginningdate'],
+                'saleEndingDate' => $row['saleendingdate'],
+                'customer' => $row['customer'],
+                'highestOffer' => $row['highestoffer']
             ));
             return $product;
         }

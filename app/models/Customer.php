@@ -40,11 +40,11 @@ class Customer extends BaseModel{
         $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email));
     }
     
-    public function update($username){
+    public function update(){
         $query = DB::connection()->prepare('UPDATE Customer '
                 . 'SET username = :username, password = :password, address = :address, email = :email '
                 . 'WHERE username = :id');
-        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $username));
+        $query->execute(array('username' => $this->username, 'password' => $this->password, 'address' => $this->address, 'email' => $this->email, 'id' => $this->username));
     }
     
     public static function delete($username){
@@ -92,6 +92,7 @@ class Customer extends BaseModel{
             $customer = new Customer(array(
                 'username' => $row['username'],
                 'password' => $row['password'],
+                'confirmation' => $row['password'],
                 'email' => $row['email'],
                 'address' => $row['address']
             ));
@@ -105,6 +106,7 @@ class Customer extends BaseModel{
             $customer = new Customer(array(
                 'username' => $attributes['username'],
                 'password' => $attributes['password'],
+                'confirmation' => $attributes['confirmation'],
                 'email' => $attributes['email'],
                 'address' => $attributes['address']
             ));

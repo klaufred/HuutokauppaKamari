@@ -71,10 +71,6 @@
       offer_controller::new_offer($id);
   });
   
-  $routes->post('/product/:id/offer/new', function() {
-      offer_controller::save_new_offer();
-  });
-  
-  $routes->get('/product/:id/offer/:id/', function() {
-      offer_controller::offer_page();
+  $routes->post('/product/:id/offer', function($id) {
+      offer_controller::save_new_offer($id);
   });

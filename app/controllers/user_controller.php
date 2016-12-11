@@ -1,6 +1,7 @@
 <?php
 require 'app/models/Customer.php';
 require 'app/models/Product.php';
+require 'app/models/Offer.php';
 class user_controller extends BaseController{
     
     public static function sellers() {
@@ -48,7 +49,7 @@ class user_controller extends BaseController{
         
         $customer = new Customer($attributes);
         
-        if($customer->validate($params) && $customer->checkUsername($params['username'])) {
+        if($customer->validate($attributes) && $customer->checkUsername($params['username'])) {
             $customer->save();
             $_SESSION['customer'] = $customer->username;
             Redirect::to('/', array('message' => 'A new customer registered!', 'customer' => $customer));
@@ -61,7 +62,9 @@ class user_controller extends BaseController{
         $customer = self::get_user_logged_in();
         $products = Product::findAllByCustomer($username);
         $profileOwner = Customer::findWithUsername($username);
-        View::make('customer/profile.html', array('products' => $products, 'customer' => $customer, 'profileOwner' => $profileOwner));
+        $offers = Offer::findAllByCustomer($username);
+        
+        View::make('customer/profile.html', array('offers' => $offers, 'products' => $products, 'customer' => $customer, 'profileOwner' => $profileOwner));
     }
     
     public static function alter_profile($username){
@@ -78,21 +81,29 @@ class user_controller extends BaseController{
         
         $customer = new Customer($attributes);
         
-        if($customer->validate($attributes)) {
-            $customer->update($username);
+        if($customer->validate($attributes) && $customer->username == $username) {
+            $customer->update();
             Redirect::to('/profile/' . $username, array('message' => 'Customer info changed!'));
             
         } else {
             $products = Product::findAllByCustomer($username);
             $user = self::get_user_logged_in();
-            View::make('customer/profile.html', array('products' => $products,'errors' => $customer->errors(), 'profileOwner' => $user,  'message' => 'Changing customer info failed, try again', 'params' => $params, 'customer' => $user));
+            $offers = Offer::findAllByCustomer($username);
+            View::make('customer/profile.html', array('offers' => $offers, 'products' => $products,'errors' => $customer->errors(), 'profileOwner' => $user,  'message' => 'Changing customer info failed, try again', 'params' => $params, 'customer' => $user));
         }
     }
     
     public static function destroy($username){
         self::check_logged_in();
-        Product::deleteAllByCustomer($username);
-        Customer::delete($username);
-        Redirect::to('/', array('message' => 'Profile deleted!'));
+        $user = self::get_user_logged_in();
+        if($user->username == $username){
+           Product::deleteAllByCustomer($username);
+           Offet::deleteAllByCustomer($username);
+           Customer::delete($username);
+           Redirect::to('/', array('message' => 'Profile deleted!')); 
+        } else {
+           Redirect::to('/', array('message' => 'Profile could not be deleted deleted!'));
+        }
+        
     }
 }

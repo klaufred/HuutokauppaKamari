@@ -3,13 +3,24 @@ require 'app/models/Product.php';
 require 'app/models/Customer.php';
 require 'app/models/Category.php';
 require 'app/models/Productcategory.php';
+require 'app/models/Offer.php';
 class product_controller extends BaseController{
     
     public static function index() {
-        $products = Product::all();
+        
         $customer = self::get_user_logged_in();
         $categories = Category::all();
-        View::make('home.html', array('products' => $products, 'customer' => $customer, 'categories' => $categories));
+        
+         $params = $_GET;
+         if(isset($params['search'])){
+            $options = array('search' => $params['search']);
+            $products = Product::all($options);
+            View::make('home.html', array('products' => $products, 'customer' => $customer, 'categories' => $categories));
+
+        } else {
+           $products = Product::allProductsAndHighestOffer();   
+           View::make('home.html', array('products' => $products, 'customer' => $customer, 'categories' => $categories));
+        }  
     }
     
     public static function product_page_change($id){
@@ -25,10 +36,20 @@ class product_controller extends BaseController{
         self::check_logged_in();
         $params = $_POST;
         $customer = self::get_user_logged_in();
-        $product = Product::createFromParams($params, $customer);
         $categories = Category::findAllByProduct($id);
-
-        if($product->validate($params)) {
+        
+        $attributes = array(
+                'productName' => $params['productName'],
+                'description' => $params['description'],
+                'minimalPrice' => $params['minimalPrice'],
+                'saleBeginningDate' => $params['saleBeginningDate'],
+                'saleEndingDate' => $params['saleEndingDate'],
+                'customer' => self::get_user_logged_in()
+            );
+        
+        $product = new Product($attributes);  
+        
+        if($product->validate($attributes)) {
             $product->update($id);
             Productcategory::deleteWithProduct($id);
             if (array_key_exists('categories', $params)) {
@@ -42,8 +63,16 @@ class product_controller extends BaseController{
     
     public static function destroy($id){
         self::check_logged_in();
-        Product::delete($id);
-        Redirect::to('/', array('message' => 'Product deleted!'));
+        $product = Product::findWithId($id);
+        $customer = self::get_user_logged_in();
+        
+        if($customer->username == $product->customer){
+          Product::delete($id);
+          Redirect::to('/', array('message' => 'Product deleted!'));  
+        } else {
+            Redirect::to('/', array('message' => 'Product could not be deleted!'));
+        }
+        
     }
 
     public static function new_product() {
@@ -57,16 +86,28 @@ class product_controller extends BaseController{
         $product = Product::findWithId($id);
         $categories = Category::findAllByProduct($id);
         $customer = self::get_user_logged_in();
-        View::make('product/product_page.html', array('product' => $product, 'customer' => $customer, 'categories' => $categories));
+        $highestOffer = Offer::getHighestOfferAmount($id);
+        View::make('product/product_page.html', array('highestOffer' => $highestOffer, 'product' => $product, 'customer' => $customer, 'categories' => $categories));
     }
 
     public static function store(){
+        self::check_logged_in();
         $params = $_POST;
         $customer = self::get_user_logged_in();
-        $product = Product::createFromParams($params, $customer);
         $categories = Category::all();
         
-        if($product->validate($params)) {
+        $attributes = array(
+                'productName' => $params['productName'],
+                'description' => $params['description'],
+                'minimalPrice' => $params['minimalPrice'],
+                'saleBeginningDate' => $params['saleBeginningDate'],
+                'saleEndingDate' => $params['saleEndingDate'],
+                'customer' => self::get_user_logged_in()
+            );
+        
+        $product = new Product($attributes); 
+        
+        if($product->validate($attributes)) {
             $product->save($customer);
             if (array_key_exists('categories', $params)) {
                 Productcategory::connect($product->id, $params['categories']);

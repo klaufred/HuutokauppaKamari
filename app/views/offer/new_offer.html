@@ -9,10 +9,12 @@
   </div>
   {% endif %}
 
-  <form method="post" action="(/product/:id/offer/new">
+  <form method="post" action="{{base_path}}/product/{{product.id}}/offer">
     <div class="form-group">
-      <label>_Amount</label>
+      <label>Amount you wish to offer:</label>
       <input name="amount" class="form-control" type="text">
+      <input name="product_id" value="{{product.id}}" type="hidden">
+      <input name="customer_username" value="{{customer.username}}" type="hidden">
         <ul>
             {% for error in errors.amount %}
                 <li>"{{error}}"</li>
