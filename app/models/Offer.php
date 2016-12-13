@@ -1,13 +1,20 @@
 <?php
 
 class Offer extends BaseModel{
-    public $id, $amount, $offerTime, $product, $customer, $productName;
+    public $id, $amount, $offerTime, $product, $customer, $productName, $saleBeginningDate, $saleEndingDate;
     
     public function __construct($attributes){
+        
         parent::__construct($attributes);
         $this->validations = array(
             'required' => array(
                 array('amount'),array('product'),array('customer')),
+            
+            'dateAfter' => array(
+                array('offerTime',$attributes['saleBeginningDate'])),
+            
+            'dateBefore' => array(
+                array('offerTime',$attributes['saleEndingDate'])),
 
             'numeric' => array(
                 array('amount')),
@@ -25,22 +32,10 @@ class Offer extends BaseModel{
         $this->id = $row['id'];
     }
     
-    public static function all(){
-        $query = DB::connection()->prepare('SELECT * FROM Offer');
-        $query->execute();
-        $rows = $query->fetchAll();
-        $offers = array();
-
-        foreach($rows as $row){
-            $offers[] = Offer::createFromARow($row);
-        }
-
-        return $offers;
-    }
-    
     public static function findAllByCustomer($customer){
         $query = DB::connection()->prepare('SELECT Offer.id, Offer.product, '
-                . 'Offer.customer, Offer.amount, Offer.offerTime, Product.productName '
+                . 'Offer.customer, Offer.amount, Offer.offerTime, Product.productName, '
+                . 'Product.saleBeginningDate, Product.saleEndingDate '
                 . 'FROM Offer LEFT JOIN Product ON Product.id = Offer.product '
                 . 'WHERE Offer.customer = :customer ORDER BY Product.productName');
         $query->execute(array('customer' => $customer));
@@ -48,16 +43,9 @@ class Offer extends BaseModel{
         $offers = array();
 
         foreach($rows as $row){
-            $offers[] = new Offer(array(
-                'id' => $row['id'],
-                'amount' => $row['amount'],
-                'offerTime' => date("Y-m-d H:i:s",  strtotime($row['offertime'])),
-                'product' => $row['product'],
-                'customer' => $row['customer'],
-                'productName' => $row['productname']
-            ));
+            $offers[] = Offer::createFromARow($row);
         }
-
+        
         return $offers;
     }
     
@@ -91,9 +79,12 @@ class Offer extends BaseModel{
             $offer = new Offer(array(
                 'id' => $row['id'],
                 'amount' => $row['amount'],
-                'offerTime' => date("Y-m-d H:i:s",  strtotime($row['offertime'])),
+                'offerTime' => date("Y/m/d H:i",  strtotime($row['offertime'])),
                 'product' => $row['product'],
-                'customer' => $row['customer']
+                'customer' => $row['customer'],
+                'productName' => $row['productname'],
+                'saleBeginningDate' => date("Y/m/d H:i",  strtotime($row['salebeginningdate'])),
+                'saleEndingDate' => date("Y/m/d H:i",  strtotime($row['saleendingdate']))
             ));
             return $offer;
         }

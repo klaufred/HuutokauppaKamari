@@ -98,7 +98,7 @@ class user_controller extends BaseController{
         $user = self::get_user_logged_in();
         if($user->username == $username){
            Product::deleteAllByCustomer($username);
-           Offet::deleteAllByCustomer($username);
+           Offer::deleteAllByCustomer($username);
            Customer::delete($username);
            Redirect::to('/', array('message' => 'Profile deleted!')); 
         } else {

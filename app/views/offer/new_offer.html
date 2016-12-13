@@ -2,6 +2,9 @@
 {% block content %}
 {% import "macros/forms.html" as forms %}
   <h1>{{product.productName}}</h1>
+  <h3>Remember that the sale begins {{product.saleBeginningDate}} and ends {{product.saleEndingDate}}!</h3>
+  <h3>Highest offer: {{highestOffer}}$</h3>
+  <h3>Minimal Price: {{product.minimalPrice}}$</h3>
   
   {% if message %}
   <div class="alert alert-success">
@@ -11,7 +14,7 @@
 
   <form method="post" action="{{base_path}}/product/{{product.id}}/offer">
     <div class="form-group">
-      <label>Amount you wish to offer:</label>
+      <label>Amount you wish to offer (just numbers, not $ sign):</label>
       <input name="amount" class="form-control" type="text">
       <input name="product_id" value="{{product.id}}" type="hidden">
       <input name="customer_username" value="{{customer.username}}" type="hidden">

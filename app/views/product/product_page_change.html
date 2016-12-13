@@ -40,7 +40,7 @@
     </div>
     
     <div class="form-group">
-      <label>Minimal Price</label>
+      <label>Minimal Price (just numbers, not $ sign)</label>
       <input name="minimalPrice" class="form-control" type="text" value="{{params.minimalPrice}}">
       <ul>
             {% for error in errors.minimalPrice %}
@@ -50,7 +50,7 @@
     </div>
       
     <div class="form-group">
-      <label>Sale begins</label>
+      <label>Sale begins, for example 2016/12/12 14:00:00</label>
       <input name="saleBeginningDate" class="form-control" type="text" value="{{params.saleBeginningDate}}">
       <ul>
             {% for error in errors.saleBeginningDate %}
@@ -60,7 +60,7 @@
     </div>
       
     <div class="form-group">
-      <label>Sale ends</label>
+      <label>Sale ends, for example 2016/12/12 14:00:00</label>
       <input name="saleEndingDate" class="form-control" type="text" value="{{params.saleEndingDate}}">
       <ul>
             {% for error in errors.saleEndingDate %}

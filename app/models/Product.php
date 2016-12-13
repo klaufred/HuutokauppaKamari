@@ -8,12 +8,14 @@ class Product extends BaseModel{
         $this->validations = array(
             'required' => array(
                 array('productName'),array('minimalPrice'),array('saleBeginningDate'),array('saleEndingDate')),
-            
             'date' => array(
                 array('saleBeginningDate'),array('saleEndingDate')),
             
             'dateBefore' => array(
-                array('saleBeginningDate, saleEndingDate')),
+                array('saleBeginningDate',$attributes['saleEndingDate'])),
+            
+            'dateAfter' => array(
+                array('saleBeginningDate',date('Y/m/d H:i'))),
             
             'lengthMax' => array(
                 array('description',500),array('productName',100)),
@@ -27,8 +29,11 @@ class Product extends BaseModel{
     }
     
     public function save($customer){
-        $query = DB::connection()->prepare('INSERT INTO Product (productName, description, minimalPrice, saleBeginningDate, saleEndingDate, customer) '
-                . 'VALUES (:productName, :description, :minimalPrice, :saleBeginningDate, :saleEndingDate, :customer) RETURNING id');
+        $query = DB::connection()->prepare('INSERT INTO Product (productName, description,'
+                . ' minimalPrice, saleBeginningDate, saleEndingDate, customer) '
+                . 'VALUES (:productName, :description, :minimalPrice, '
+                . ':saleBeginningDate, :saleEndingDate, :customer) '
+                . 'RETURNING id');
         $query->execute(array('productName' => $this->productName, 'description' => $this->description, 'minimalPrice' => $this->minimalPrice, 'saleBeginningDate' => $this->saleBeginningDate, 'saleEndingDate' => $this->saleEndingDate, 'customer' => $customer->username));
         $row = $query->fetch();
         $this->id = $row['id'];
@@ -36,7 +41,10 @@ class Product extends BaseModel{
     
     public function update($id){
         $query = DB::connection()->prepare('UPDATE Product '
-                . 'SET productName = :productName, description = :description, saleBeginningDate = :saleBeginningDate, saleEndingDate = :saleEndingDate, minimalPrice = :minimalPrice WHERE id = :id');
+                . 'SET productName = :productName, description = :description, '
+                . 'saleBeginningDate = :saleBeginningDate, saleEndingDate = :saleEndingDate, '
+                . 'minimalPrice = :minimalPrice '
+                . 'WHERE id = :id');
         $query->execute(array('productName' => $this->productName, 'description' => $this->description, 'minimalPrice' => $this->minimalPrice, 'saleBeginningDate' => $this->saleBeginningDate, 'saleEndingDate' => $this->saleEndingDate, 'id' => $id));
         $this->id = $id;
     }
@@ -167,8 +175,8 @@ class Product extends BaseModel{
                 'productName' => $row['productname'],
                 'description' => $row['description'],
                 'minimalPrice' => $row['minimalprice'],
-                'saleBeginningDate' => $row['salebeginningdate'],
-                'saleEndingDate' => $row['saleendingdate'],
+                'saleBeginningDate' => date("Y/m/d H:i",  strtotime($row['salebeginningdate'])),
+                'saleEndingDate' => date("Y/m/d H:i",  strtotime($row['saleendingdate'])),
                 'customer' => $row['customer']
             ));
             return $product;
@@ -184,8 +192,8 @@ class Product extends BaseModel{
                 'productName' => $row['productname'],
                 'description' => $row['description'],
                 'minimalPrice' => $row['minimalprice'],
-                'saleBeginningDate' => $row['salebeginningdate'],
-                'saleEndingDate' => $row['saleendingdate'],
+                'saleBeginningDate' => date("Y/m/d H:i",  strtotime($row['salebeginningdate'])),
+                'saleEndingDate' => date("Y/m/d H:i",  strtotime($row['saleendingdate'])),
                 'customer' => $row['customer'],
                 'highestOffer' => $row['highestoffer']
             ));
@@ -194,4 +202,5 @@ class Product extends BaseModel{
 
         return null;
     }
+    
 }

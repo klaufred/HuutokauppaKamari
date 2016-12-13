@@ -1,6 +1,7 @@
 <?php
 namespace Valitron;
-
+use \DateTime;
+use \Kint;
 use InvalidArgumentException;
 
 /**
@@ -555,23 +556,27 @@ class Validator
         return $parsed['error_count'] === 0 && $parsed['warning_count'] === 0;
     }
 
-    /**
+     /**
      * Validate the date is before a given date
      *
      * @param  string $field
      * @param  mixed  $value
-     * @param  array  $params
+     * @param  mixed  $params
      * @internal param array $fields
      * @return bool
      */
     protected function validateDateBefore($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
-
-        return $vtime < $ptime;
+        
+        $vtime = DateTime::createFromFormat('Y/m/d H:i',$value);
+        $ptime = DateTime::createFromFormat('Y/m/d H:i',$params[0]);
+        //Kint::dump($vtime->getTimestamp() < $ptime->getTimestamp());
+        if ($vtime instanceof DateTime && $ptime instanceof DateTime) {
+           return $vtime->getTimestamp() < $ptime->getTimestamp(); 
+        } else {
+            return false;
+        }
     }
-
     /**
      * Validate the date is after a given date
      *
@@ -583,10 +588,14 @@ class Validator
      */
     protected function validateDateAfter($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
-
-        return $vtime > $ptime;
+        $vtime = DateTime::createFromFormat('Y/m/d H:i',$value);
+        $ptime = DateTime::createFromFormat('Y/m/d H:i',$params[0]);
+        //Kint::dump($vtime->getTimestamp() > $ptime->getTimestamp());
+        if ($vtime instanceof DateTime && $ptime instanceof DateTime) {
+           return $vtime->getTimestamp() > $ptime->getTimestamp(); 
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -36,7 +36,7 @@ class product_controller extends BaseController{
         self::check_logged_in();
         $params = $_POST;
         $customer = self::get_user_logged_in();
-        $categories = Category::findAllByProduct($id);
+        $categories = Category::all();
         
         $attributes = array(
                 'productName' => $params['productName'],
@@ -57,7 +57,8 @@ class product_controller extends BaseController{
             }
             Redirect::to('/product/' . $product->id, array('message' => 'Product info is edited!'));
         }else{
-           View::make('product/product_page_change.html', array('errors' => $product->errors(), 'params' => $product, 'customer' => $customer, 'categories' => $categories)); 
+           $original_product = Product::findWithId($id);
+           View::make('product/product_page_change.html', array('errors' => $product->errors(), 'params' => $original_product, 'customer' => $customer, 'categories' => $categories)); 
         }
     }
     
