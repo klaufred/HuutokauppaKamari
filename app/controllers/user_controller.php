@@ -100,6 +100,7 @@ class user_controller extends BaseController{
            Product::deleteAllByCustomer($username);
            Offer::deleteAllByCustomer($username);
            Customer::delete($username);
+           $_SESSION['customer'] = null;
            Redirect::to('/', array('message' => 'Profile deleted!')); 
         } else {
            Redirect::to('/', array('message' => 'Profile could not be deleted deleted!'));
